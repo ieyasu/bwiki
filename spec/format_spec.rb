@@ -5,6 +5,9 @@ describe "depluralizer" do
   it "doesn't depluralize singular words" do
     depluralize('thing').should eq('thing')
     depluralize('twenty').should eq('twenty')
+    depluralize('snake').should eq('snake')
+    depluralize('horse').should eq('horse')
+    depluralize('monkey').should eq('monkey')
   end
 
   # rule: add 's'
@@ -55,6 +58,7 @@ describe "wiki word detector" do
 
   it "rejects non-wikiwords" do
     wikiword?('word').should be_false
+    wikiword?('Word').should be_false
     wikiword?('weIRdcaps').should be_false
     wikiword?('ForwardX11Trusted').should be_false
     wikiword?('Either/Or').should be_false
