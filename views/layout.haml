@@ -1,0 +1,17 @@
+!!! 5
+%html{lang: 'en'}
+  %head
+    %title= render_title
+    %link{rel: 'stylesheet', href: '/wiki.css'}
+  %body
+    #header
+      #branding= render_branding
+      %a{:href => '/'} Home
+
+      != haml :_search
+
+    #content
+      != yield
+
+    #footer
+      != haml :_search

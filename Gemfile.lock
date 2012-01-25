@@ -10,9 +10,11 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    bluecloth (2.2.0)
     daemons (1.1.6)
     diff-lcs (1.1.3)
     eventmachine (0.12.10)
+    haml (3.1.4)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
@@ -35,7 +37,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bluecloth
   bundler (~> 1.0.21)
+  haml
   rake
   rspec (~> 2.8.0)
   sinatra!

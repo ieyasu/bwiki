@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'sinatra', :git => "git://github.com/sinatra/sinatra.git"
+gem 'haml', "~> 3.1.4"
 
 group :development do
   gem "rake"
