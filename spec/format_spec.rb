@@ -105,7 +105,7 @@ EOD
 EOD
 
 t4 = <<EOD
-|multi|line \
+|multi| line \
 cell|
 EOD
 h4 = <<EOD
@@ -137,5 +137,37 @@ EOD
   it "doesn't format pipes in random locations" do
     fmt_tables(r1).should == r1
     fmt_tables(r2).should == r2
+  end
+
+  it "formats cell attributes" do
+    fmt_cell("_", "foo").should == "<th>foo</th>"
+    fmt_cell("<", "foo").should == "<td align='left'>foo</td>"
+    fmt_cell(">", "foo").should == "<td align='right'>foo</td>"
+    fmt_cell("=", "foo").should == "<td align='center'>foo</td>"
+    fmt_cell("#", "foo").should == "<td align='justify'>foo</td>"
+    fmt_cell("^", "foo").should == "<td valign='top'>foo</td>"
+    fmt_cell("~", "foo").should == "<td valign='bottom'>foo</td>"
+    fmt_cell("\\2", "foo").should == "<td colspan='2'>foo</td>"
+    fmt_cell("/3", "foo").should == "<td rowspan='3'>foo</td>"
+
+    fmt_cell("_#/2", "s").should == "<th align='justify' rowspan='2'>s</th>"
+
+    fmt_cell("", "").should == "<td></td>"
+  end
+
+  tc1 = <<EOD
+|_. header|\\_.cen|
+EOD
+  thc1 = <<EOD
+<table class='wiki'>
+  <tr>
+    <th>header</th>
+    <td>_.cen</td>
+  </tr>
+</table>
+EOD
+
+  it "formats cell attributes in a table" do 
+    fmt_tables(tc1).should == thc1
   end
 end

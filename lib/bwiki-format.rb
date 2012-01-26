@@ -32,9 +32,32 @@ module BWiki
     s =~ WIKI_WORD_PAT
   end
 
+  def fmt_cell(opts, text)
+    tag = 'td'
+    atts = ''
+    if opts
+      opts.scan(/.\d*/) do |opt|
+        case opt
+        when '_' then tag = 'th'
+        when '<' then atts << " align='left'"
+        when '>' then atts << " align='right'"
+        when '=' then atts << " align='center'"
+        when '#' then atts << " align='justify'"
+        when '^' then atts << " valign='top'"
+        when '~' then atts << " valign='bottom'"
+        when %r!\\(\d+)! then atts << " colspan='#{$1}'"
+        when %r!/(\d+)!  then atts << " rowspan='#{$1}'"
+        end
+      end
+    elsif text[0] == '\\'
+      text = text[1..-1]
+    end
+    "<#{tag}#{atts}>#{text}</#{tag}>"
+  end
+
   TABLE_PAT = /(?:^\|(?:(?:[^|\r\n\\]|\\.|\\[\r \t]*\n)*\|)+[ \t]*\r?\n)+/
   ROW_PAT = /^(?:\|(?!\r?\n)(?:[^|\\]|\\.)+(?=\|))+\|\r?\n/x
-  CELL_PAT = /\|((?:[^|\\]|\\.)+)(?=\|)/mx
+  CELL_PAT = /\|(?:((?:[_<>=#^~]|(?:[\\\/]\d+))+)\.)?((?:[^|\\]|\\.)+)(?=\|)/mx
 
   def fmt_tables(text)
     text.gsub(TABLE_PAT) do |table|
@@ -42,7 +65,7 @@ module BWiki
       table.scan(ROW_PAT) do |row|
         buf << "  <tr>\n"
         row.scan(CELL_PAT) do |cell|
-          buf << "    <td>#{$1}</td>\n"
+          buf << "    #{fmt_cell $1, $2.strip}\n"
         end
         buf << "  </tr>\n"
       end
