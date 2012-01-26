@@ -1,9 +1,14 @@
 require 'sinatra'
 require 'haml'
+require 'bwiki-format'
 
 helpers do
   def render_title(s = nil)
-    "BWiki"
+    if @page
+      "#{@page} - BWiki"
+    else
+      "BWiki"
+    end
   end
 
   def render_branding
@@ -14,7 +19,7 @@ helpers do
 end
 
 get '/' do
-  haml '<h1>BWiki Lives!</h1>'
+  redirect to('/StartPage')
 end
 
 get '/wiki.css' do
@@ -27,6 +32,16 @@ get '/images/:name' do
     400
   elsif File.exist?(path)
     send_file path
+  else
+    raise Sinatra::NotFound
+  end
+end
+
+get BWiki::PAGE_URL do
+  @page = params[:captures].first
+  @path = "content/pages/#{@page}"
+  if File.exist?(@path)
+    haml :page
   else
     raise Sinatra::NotFound
   end

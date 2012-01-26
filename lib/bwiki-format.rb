@@ -22,9 +22,10 @@ module BWiki
   # Note: (?> ...) prevents backtracking so, e.g. 'NASA' doesn't get
   # minimally matched by the second line in order to get the requisite
   # 2+ repetitions.
-  WIKI_WORD_PAT = /\A(?> (?:[A-Z]\d*[a-z]+[a-z0-9]*) |
-                         (?:[A-Z](?![a-z0-9]))+
-                     ){2,}?\Z/x
+  WIKI_WORD_STR = "(?> (?:[A-Z]\\d*[a-z]+[a-z0-9]*) |" +
+                      "(?:[A-Z](?![a-z0-9]))+ ){2,}"
+  WIKI_WORD_PAT = Regexp.new("\\A#{WIKI_WORD_STR}\\Z", Regexp::EXTENDED)
+  PAGE_URL = Regexp.new("(#{WIKI_WORD_STR})", Regexp::EXTENDED)
 
   # Given a word, decides if it's a valid WikiWord or not.
   def wikiword?(s)
