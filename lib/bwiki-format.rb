@@ -31,4 +31,22 @@ module BWiki
   def wikiword?(s)
     s =~ WIKI_WORD_PAT
   end
+
+  TABLE_PAT = /(?:^\|(?:(?:[^|\r\n\\]|\\.|\\[\r \t]*\n)*\|)+[ \t]*\r?\n)+/
+  ROW_PAT = /^(?:\|(?!\r?\n)(?:[^|\\]|\\.)+(?=\|))+\|\r?\n/x
+  CELL_PAT = /\|((?:[^|\\]|\\.)+)(?=\|)/mx
+
+  def fmt_tables(text)
+    text.gsub(TABLE_PAT) do |table|
+      buf = "<table class='wiki'>\n"
+      table.scan(ROW_PAT) do |row|
+        buf << "  <tr>\n"
+        row.scan(CELL_PAT) do |cell|
+          buf << "    <td>#{$1}</td>\n"
+        end
+        buf << "  </tr>\n"
+      end
+      buf << "</table>\n"
+    end
+  end
 end

@@ -64,3 +64,78 @@ describe "wiki word detector" do
     wikiword?('Either/Or').should be_false
   end
 end
+
+describe "table formatter" do
+  t1 = <<EOD
+|simple|table|
+EOD
+  h1 = <<EOD
+<table class='wiki'>
+  <tr>
+    <td>simple</td>
+    <td>table</td>
+  </tr>
+</table>
+EOD
+
+  t2 = <<EOD
+|escaped \\| pipe|
+EOD
+  h2 = <<EOD
+<table class='wiki'>
+  <tr>
+    <td>escaped \\| pipe</td>
+  </tr>
+</table>
+EOD
+
+  t3 = <<EOD
+|simple|
+|table|
+EOD
+  h3 = <<EOD
+<table class='wiki'>
+  <tr>
+    <td>simple</td>
+  </tr>
+  <tr>
+    <td>table</td>
+  </tr>
+</table>
+EOD
+
+t4 = <<EOD
+|multi|line \
+cell|
+EOD
+h4 = <<EOD
+<table class='wiki'>
+  <tr>
+    <td>multi</td>
+    <td>line cell</td>
+  </tr>
+</table>
+EOD
+
+  it "formats simple tables" do
+    fmt_tables(t1).should == h1
+    fmt_tables(t2).should == h2
+    fmt_tables(t3).should == h3
+    fmt_tables(t4).should == h4
+  end
+
+  r1 = <<EOD
+some text |not |a table|
+EOD
+  r2 = <<EOD
+|still|not| a table
+EOD
+  r3 = <<EOD
+some text |not a|table| more text
+EOD
+
+  it "doesn't format pipes in random locations" do
+    fmt_tables(r1).should == r1
+    fmt_tables(r2).should == r2
+  end
+end
