@@ -24,15 +24,6 @@ a:hover {
    color: #b18906;
 }
 
-form.search {
-   margin-top: 1em;
-}
-
-form.search input {
-   border: 2px solid #01684d;
-   margin-left: 1ex;
-}
-
 #header {
    border-bottom: 2px solid #01684d;
    min-height: 100px;
@@ -40,6 +31,23 @@ form.search input {
 
 #header div {
    padding-top: 0.5em;
+}
+
+img.logo {
+   margin-top: 0;
+   padding-top: 0;
+   margin-left: 1em;
+   float: right;
+   width: auto;
+}
+
+form.search {
+   margin-top: 1em;
+}
+
+form.search input {
+   border: 2px solid #01684d;
+   margin-left: 1ex;
 }
 
 #content {
