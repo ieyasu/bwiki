@@ -1,8 +1,17 @@
 require 'sinatra'
+require 'sinatra/reloader' if development?
 require 'haml'
 require 'bwiki-format'
 
 helpers do
+  include BWiki
+
+  def fmt_page(page)
+    File.open("content/pages/#{page}") do |fin|
+      fmt_tables fin.read
+    end
+  end
+
   def render_title(s = nil)
     if @page
       "#{@page} - BWiki"

@@ -1,15 +1,8 @@
-GIT
-  remote: git://github.com/sinatra/sinatra.git
-  revision: 9ab66a609ce2affec1d676f4b171e9ece609049a
-  specs:
-    sinatra (1.4.0)
-      rack (~> 1.3, >= 1.3.6)
-      rack-protection (~> 1.2)
-      tilt (~> 1.3, >= 1.3.3)
-
 GEM
   remote: http://rubygems.org/
   specs:
+    backports (2.3.0)
+    bluecloth (2.2.0)
     daemons (1.1.6)
     diff-lcs (1.1.3)
     eventmachine (0.12.10)
@@ -28,6 +21,17 @@ GEM
     rspec-expectations (2.8.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.8.0)
+    sinatra (1.3.2)
+      rack (~> 1.3, >= 1.3.6)
+      rack-protection (~> 1.2)
+      tilt (~> 1.3, >= 1.3.3)
+    sinatra-contrib (1.3.1)
+      backports (>= 2.0)
+      eventmachine
+      rack-protection
+      rack-test
+      sinatra (~> 1.3.0)
+      tilt (~> 1.3)
     thin (1.3.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -38,10 +42,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bluecloth (~> 2.2.0)
   bundler (~> 1.0.21)
   haml (~> 3.1.4)
   rack-test (~> 0.6.1)
   rake
   rspec (~> 2.8.0)
-  sinatra!
+  sinatra
+  sinatra-contrib
   thin (~> 1.3.1)

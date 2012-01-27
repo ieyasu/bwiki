@@ -125,10 +125,4 @@ module BWiki
 
     out
   end
-
-  def fmt_page(path)
-    File.open(path) do |fin|
-      fmt_tables fin.read
-    end
-  end
 end
