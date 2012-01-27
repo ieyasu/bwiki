@@ -188,10 +188,22 @@ describe "wiki chunk formatter" do
       "<a href='mailto:user@example.com'>mailto:user@example.com</a>"
   end
 
-  it "translates markdown to html" do
-  end
+  chunk = <<EOD
+- a _list_ of bullets
+- and a http://example.com link
+- and **other formatting**
+- and WikiWords StartPage
+EOD
+  html = <<EOD
+<ul>
+<li>a <em>list</em> of bullets</li>
+<li>and a <a href='http://example.com'>http://example.com</a> link</li>
+<li>and <strong>other formatting</strong></li>
+<li>and WikiWord<a href='WikiWord/edit'>?</a>s<a href='WikiWords/edit'>?</a> <a href='StartPage'>StartPage</a></li>
+</ul>
+EOD
 
-  it "combines all the above" do
+  it "transforms WikiWords -> URLs -> markdown" do
+    fmt_wiki_chunk(chunk).should == html
   end
-
 end

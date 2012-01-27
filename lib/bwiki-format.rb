@@ -1,3 +1,5 @@
+require 'bluecloth'
+
 class String
   # Inspects the end of the string to see if it has a recognized plural
   # word form and either returns the word split at the plural suffix
@@ -58,6 +60,11 @@ module BWiki
     text.gsub(%r!\b(?:(?:https?|ftp)://|mailto:)\S+!) do |url|
       "<a href='#{url}'>#{url}</a>"
     end
+  end
+
+  # formats chunks of wiki text, transforming wiki words -> urls -> markdown
+  def fmt_wiki_chunk(text)
+    BlueCloth.new(fmt_urls fmt_wiki_words text).to_html
   end
 
   def fmt_cell(opts, text)
