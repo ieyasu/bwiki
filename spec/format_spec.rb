@@ -135,8 +135,9 @@ some text |not a|table| more text
 EOD
 
   it "doesn't format pipes in random locations" do
-    fmt_tables(r1).should == r1
-    fmt_tables(r2).should == r2
+    fmt_tables(r1).should == "<p>#{r1.rstrip}</p>"
+    fmt_tables(r2).should == "<p>#{r2.rstrip}</p>"
+    fmt_tables(r3).should == "<p>#{r3.rstrip}</p>"
   end
 
   it "formats cell attributes" do

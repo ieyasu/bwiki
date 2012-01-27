@@ -67,6 +67,13 @@ module BWiki
     BlueCloth.new(fmt_urls fmt_wiki_words text).to_html
   end
 
+  # strip the <p> tags enclosing a wiki text chunk
+  def strip_para(text)
+    text = text[3..-1] if text =~ /\A<p>/
+    text = text[0..-5] if text =~ %r!</p>\Z!
+    text
+  end
+
   def fmt_cell(opts, text)
     tag = 'td'
     atts = ''
@@ -87,7 +94,7 @@ module BWiki
     elsif text[0] == '\\'
       text = text[1..-1]
     end
-    "<#{tag}#{atts}>#{text}</#{tag}>"
+    "<#{tag}#{atts}>#{strip_para fmt_wiki_chunk text}</#{tag}>"
   end
 
   TABLE_PAT = /(?:^\|(?:(?:[^|\r\n\\]|\\.|\\[\r \t]*\n)*\|)+[ \t]*\r?\n)+/
@@ -95,16 +102,33 @@ module BWiki
   CELL_PAT = /\|(?:((?:[_<>=#^~]|(?:[\\\/]\d+))+)\.)?((?:[^|\\]|\\.)+)(?=\|)/mx
 
   def fmt_tables(text)
-    text.gsub(TABLE_PAT) do |table|
-      buf = "<table class='wiki'>\n"
+    out = ''
+    i = 0
+    while (j = text.index(TABLE_PAT, i))
+      out << fmt_wiki_chunk(text[i...j]) if i < j
+
+      table = $~[0]
+      out << "<table class='wiki'>\n"
       table.scan(ROW_PAT) do |row|
-        buf << "  <tr>\n"
+        out << "  <tr>\n"
         row.scan(CELL_PAT) do |cell|
-          buf << "    #{fmt_cell $1, $2.strip}\n"
+          out << "    #{fmt_cell $1, $2.strip}\n"
         end
-        buf << "  </tr>\n"
+        out << "  </tr>\n"
       end
-      buf << "</table>\n"
+      out << "</table>\n"
+
+      i = j + table.length
+    end
+
+    out << fmt_wiki_chunk(text[i..-1]) if i < text.length
+
+    out
+  end
+
+  def fmt_page(path)
+    File.open(path) do |fin|
+      fmt_tables fin.read
     end
   end
 end
