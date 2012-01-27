@@ -1,35 +1,56 @@
-module BWiki
-  # Takes a string ending in a word which may or may not be plural.
-  # If it is a recognized plural form, returns the string with the
-  # ending word in singular form.
-  def depluralize(word)
-    case word
-    when /\w(?:s|z|ch|sh|x)es$/i
-      word[0..-3] # end in s, z, ch, sh, x -> remove 'es'
-    when /\wos$/i
-      word[0..-2] # end in os -> o
-    when /\woes$/i
-      word[0..-3] # end in oes -> o
-    when /\wies$/i
-      word[0..-4] + 'y' # end in 'ies' -> 'y'
-    when /\ws$/i
-      word[0..-2] # simple plural -> remove ending 's'
-    else
-      word # not a plural
-    end
+class String
+  # Inspects the end of the string to see if it has a recognized plural
+  # word form and either returns the word split at the plural suffix
+  #  boundary or just [self, nil].
+  def split_plural
+    i =
+      case self
+      when /\w(?:s|z|ch|sh|x)es$/i
+        -2 # end in s, z, ch, sh, x -> remove 'es'
+      when /\wos$/i
+        -1 # end in os -> o
+      when /\woes$/i
+        -2 # end in oes -> o
+      when /\wies$/i
+        -3 # end in 'ies' -> 'y'
+      when /\ws$/i
+        -1 # simple plural -> remove ending 's'
+      else
+        return self, nil # not a plural
+      end
+    return self[0...i], self[i..-1]
   end
+end
 
+module BWiki
   # Note: (?> ...) prevents backtracking so, e.g. 'NASA' doesn't get
   # minimally matched by the second line in order to get the requisite
   # 2+ repetitions.
   WIKI_WORD_STR = "(?> (?:[A-Z]\\d*[a-z]+[a-z0-9]*) |" +
                       "(?:[A-Z](?![a-z0-9]))+ ){2,}"
-  WIKI_WORD_PAT = Regexp.new("\\A#{WIKI_WORD_STR}\\Z", Regexp::EXTENDED)
+  WIKI_WORD_PAT = Regexp.new("\\b#{WIKI_WORD_STR}\\b", Regexp::EXTENDED)
   PAGE_URL = Regexp.new("(#{WIKI_WORD_STR})", Regexp::EXTENDED)
 
   # Given a word, decides if it's a valid WikiWord or not.
   def wikiword?(s)
     s =~ WIKI_WORD_PAT
+  end
+
+  def fmt_wiki_words(text)
+    text.gsub(WIKI_WORD_PAT) do |word|
+      if File.exist?("content/pages/#{word}")
+        "<a href='#{word}'>#{word}</a>"
+      else
+        s, plu = word.split_plural
+        if File.exist?("content/pages/#{s}")
+          "<a href='#{s}'>#{s}</a>#{plu}"
+        else
+          link = "#{s}<a href='#{s}/edit'>?</a>"
+          link << "#{plu}<a href='#{word}/edit'>?</a>" if plu
+          link
+        end
+      end
+    end
   end
 
   def fmt_cell(opts, text)

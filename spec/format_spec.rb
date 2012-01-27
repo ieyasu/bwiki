@@ -1,39 +1,39 @@
 require 'bwiki-format'
 include BWiki
 
-describe "depluralizer" do
+describe "plural splitter" do
   it "doesn't depluralize singular words" do
-    depluralize('thing').should eq('thing')
-    depluralize('twenty').should eq('twenty')
-    depluralize('snake').should eq('snake')
-    depluralize('horse').should eq('horse')
-    depluralize('monkey').should eq('monkey')
+    'thing'.split_plural.should eq(['thing', nil])
+    'twenty'.split_plural.should eq(['twenty', nil])
+    'snake'.split_plural.should eq(['snake', nil])
+    'horse'.split_plural.should eq(['horse', nil])
+    'monkey'.split_plural.should eq(['monkey', nil])
   end
 
   # rule: add 's'
   it "does simple depluralization" do
-    depluralize('RFCs').should eq('RFC')
-    depluralize('peas').should eq('pea')
+    'RFCs'.split_plural.should eq(['RFC', 's'])
+    'peas'.split_plural.should eq(['pea', 's'])
   end
 
   # rule: nouns ending in s, z, ch, sh, x: add 'es'
   it "depluralizes nouns ending in s, z, ch, sh, x" do
-    depluralize('OSes').should eq('OS')
-    depluralize('klutzes').should eq('klutz')
-    depluralize('loaches').should eq('loach')
-    depluralize('wishes').should eq('wish')
-    depluralize('foxes').should eq('fox')
+    'OSes'.split_plural.should eq(['OS', 'es'])
+    'klutzes'.split_plural.should eq(['klutz', 'es'])
+    'loaches'.split_plural.should eq(['loach', 'es'])
+    'wishes'.split_plural.should eq(['wish', 'es'])
+    'foxes'.split_plural.should eq(['fox', 'es'])
   end
 
   # rule: nouns ending in o: add 's' or 'es', no simple pattern to discriminate
   it "depluralizes nouns ending in o" do
-    depluralize('potatoes').should eq('potato')
-    depluralize('pros').should eq('pro')
+    'potatoes'.split_plural.should eq(['potato', 'es'])
+    'pros'.split_plural.should eq(['pro', 's'])
   end
 
   # rule: nounds ending in y: 'y' -> 'ies'
   it "depluralizes nouns ending in y" do
-    depluralize('stories').should eq('story')
+    'stories'.split_plural.should eq(['stor', 'ies'])
   end
 end
 
@@ -169,5 +169,23 @@ EOD
 
   it "formats cell attributes in a table" do 
     fmt_tables(tc1).should == thc1
+  end
+end
+
+describe "wiki chunk formatter" do
+  it "links wiki words" do
+    fmt_wiki_words("a StartPage appear").should == "a <a href='StartPage'>StartPage</a> appear"
+    fmt_wiki_words("WikiWord").should == "WikiWord<a href='WikiWord/edit'>?</a>"
+    fmt_wiki_words("PluralWords").should == "PluralWord<a href='PluralWord/edit'>?</a>s<a href='PluralWords/edit'>?</a>"
+  end
+
+  it "automatically links http and ftp urls" do
+    fmt_wiki_words("").should == ""
+  end
+
+  it "translates markdown to html" do
+  end
+
+  it "combines all the above" do
   end
 end
