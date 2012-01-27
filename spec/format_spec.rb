@@ -180,7 +180,12 @@ describe "wiki chunk formatter" do
   end
 
   it "automatically links http and ftp urls" do
-    fmt_wiki_words("").should == ""
+    fmt_urls("a http://example.com/index.html").should ==
+      "a <a href='http://example.com/index.html'>http://example.com/index.html</a>"
+    fmt_urls("https://example.com/ foo").should ==
+      "<a href='https://example.com/'>https://example.com/</a> foo"
+    fmt_urls("mailto:user@example.com").should ==
+      "<a href='mailto:user@example.com'>mailto:user@example.com</a>"
   end
 
   it "translates markdown to html" do
@@ -188,4 +193,5 @@ describe "wiki chunk formatter" do
 
   it "combines all the above" do
   end
+
 end

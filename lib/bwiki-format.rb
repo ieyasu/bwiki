@@ -53,6 +53,13 @@ module BWiki
     end
   end
 
+  # Formats wiki words, urls, then send the result through markdown
+  def fmt_urls(text)
+    text.gsub(%r!\b(?:(?:https?|ftp)://|mailto:)\S+!) do |url|
+      "<a href='#{url}'>#{url}</a>"
+    end
+  end
+
   def fmt_cell(opts, text)
     tag = 'td'
     atts = ''
