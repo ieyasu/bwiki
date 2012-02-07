@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem 'sinatra'
 gem 'haml', "~> 3.1.4"
 gem 'bluecloth', "~> 2.2.0"
+gem 'grit', "~> 2.4.1"
 
 group :development do
   gem "rake"

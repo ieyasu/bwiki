@@ -24,6 +24,7 @@ class String
   end
 end
 
+# Page formatting related methods.
 module BWiki
   # Note: (?> ...) prevents backtracking so, e.g. 'NASA' doesn't get
   # minimally matched by the second line in order to get the requisite

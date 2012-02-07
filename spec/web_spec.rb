@@ -1,4 +1,5 @@
-require File.dirname(__FILE__) + '/../bwiki'
+$spec_dir = File.dirname(__FILE__)
+require $spec_dir + '/../bwiki'
 require 'rack/test'
 
 set :environment, :test
@@ -8,6 +9,16 @@ describe 'BWiki' do
 
   def app
     Sinatra::Application
+  end
+
+  before(:all) do
+    Dir.chdir($spec_dir)
+    `cp -r ../template content`
+  end
+
+  after(:all) do
+    `rm -r content`
+    Dir.chdir($spec_dir + '/..')
   end
 
   it "redirects / to start page" do

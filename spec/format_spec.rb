@@ -1,3 +1,4 @@
+$spec_dir = File.dirname(__FILE__)
 require 'bwiki-format'
 include BWiki
 
@@ -174,6 +175,15 @@ EOD
 end
 
 describe "wiki chunk formatter" do
+  before(:all) do
+    Dir.chdir($spec_dir)
+    `mkdir -p content/pages; touch content/pages/StartPage`
+  end
+
+  after(:all) do
+    `rm -r content`
+  end
+
   it "links wiki words" do
     fmt_wiki_words("a StartPage appear").should == "a <a href='StartPage'>StartPage</a> appear"
     fmt_wiki_words("WikiWord").should == "WikiWord<a href='WikiWord/edit'>?</a>"
